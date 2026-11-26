@@ -15,6 +15,7 @@ import android.widget.ImageButton
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import kotlin.math.abs
 import kotlin.math.max
@@ -49,7 +50,7 @@ class ReaderActivity : BaseActivity() {
         findViewById<ImageButton>(R.id.btnFirst).setOnClickListener { cmd(PlayerService.ACTION_FIRST) }
         findViewById<ImageButton>(R.id.btnPrev).setOnClickListener { cmd(PlayerService.ACTION_PREV) }
         findViewById<ImageButton>(R.id.btnNext).setOnClickListener { cmd(PlayerService.ACTION_NEXT) }
-        btnPlay.setOnClickListener { cmd(PlayerService.ACTION_TOGGLE) }
+        btnPlay.setOnClickListener { onPlayPressed() }
 
         setupSentenceTouch()
     }
@@ -74,6 +75,25 @@ class ReaderActivity : BaseActivity() {
     override fun onPlayerState() = refresh()
 
     private fun cmd(action: String, index: Int = -1) = PlayerService.command(this, action, index)
+
+    /**
+     * Lire/Pause. Au premier lancement de la lecture, propose une fois d'exclure l'app de
+     * l'optimisation de la batterie, pour que tout continue écran éteint. La lecture démarre
+     * de toute façon tout de suite.
+     */
+    private fun onPlayPressed() {
+        val starting = !PlayerService.playing
+        cmd(PlayerService.ACTION_TOGGLE)
+        if (starting && !prefs.askedBattery && !Battery.isIgnoringOptimizations(this)) {
+            prefs.askedBattery = true
+            AlertDialog.Builder(this)
+                .setTitle(R.string.battery_title)
+                .setMessage(R.string.battery_message)
+                .setPositiveButton(R.string.battery_allow) { _, _ -> Battery.requestIgnore(this) }
+                .setNegativeButton(R.string.battery_later, null)
+                .show()
+        }
+    }
 
     private fun refresh() {
         val d = doc ?: return

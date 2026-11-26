@@ -60,5 +60,13 @@
     <string name="tap_double">double</string>
     <string name="tap_triple">triple</string>
     <string name="tap_many">%1$d taps (ignoré)</string>
+    <string name="section_screen_off">Écran éteint</string>
+    <string name="battery_title">Lecture écran éteint</string>
+    <string name="battery_message">Pour que la lecture et les taps au dos continuent écran éteint, autorisez « Dictée en boucle » à ignorer l\'optimisation de la batterie. Sinon, certains téléphones arrêtent l\'application au bout de quelques minutes.</string>
+    <string name="battery_allow">Autoriser</string>
+    <string name="battery_later">Plus tard</string>
+    <string name="battery_button">Autoriser la lecture écran éteint</string>
+    <string name="battery_ok">✓ L\'optimisation de la batterie est désactivée pour l\'application : la lecture continue écran éteint.</string>
+    <string name="battery_needed">L\'optimisation de la batterie est active : sur certains téléphones, la lecture peut s\'arrêter écran éteint.</string>
     <string name="no_accelerometer">Ce téléphone n\'a pas d\'accéléromètre.</string>
 </resources>

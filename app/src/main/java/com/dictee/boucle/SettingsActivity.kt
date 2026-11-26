@@ -46,6 +46,7 @@ class SettingsActivity : BaseActivity() {
         setupPartSize()
         setupVoiceAndRhythm()
         setupTaps()
+        findViewById<Button>(R.id.batteryButton).setOnClickListener { Battery.requestIgnore(this) }
 
         tts = TextToSpeech(applicationContext) { status ->
             runOnUiThread {
@@ -64,6 +65,17 @@ class SettingsActivity : BaseActivity() {
     override fun onStart() {
         PlayerService.calibrating = true
         super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateBatteryStatus()
+    }
+
+    private fun updateBatteryStatus() {
+        val ok = Battery.isIgnoringOptimizations(this)
+        findViewById<TextView>(R.id.batteryStatus).setText(if (ok) R.string.battery_ok else R.string.battery_needed)
+        findViewById<Button>(R.id.batteryButton).visibility = if (ok) View.GONE else View.VISIBLE
     }
 
     override fun onStop() {

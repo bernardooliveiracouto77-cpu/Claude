@@ -83,6 +83,10 @@ class Prefs(context: Context) {
 
     val tapThreshold: Float get() = TapDetector.thresholdFor(sensitivity)
 
+    var askedBattery: Boolean
+        get() = sp.getBoolean("asked_battery", false)
+        set(v) = sp.edit().putBoolean("asked_battery", v).apply()
+
     var askedNotifications: Boolean
         get() = sp.getBoolean(K_ASKED_NOTIF, false)
         set(v) = sp.edit().putBoolean(K_ASKED_NOTIF, v).apply()

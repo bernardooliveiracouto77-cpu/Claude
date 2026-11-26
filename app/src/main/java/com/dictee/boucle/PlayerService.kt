@@ -5,8 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.ServiceInfo
 import android.hardware.Sensor
@@ -148,6 +150,24 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
     private var levelPeak = 0f
     private var lastLevelPost = 0L
 
+    private var screenReceiverRegistered = false
+
+    /**
+     * Écran éteint/allumé : certains téléphones cessent d'envoyer les mesures de l'accéléromètre
+     * à l'extinction de l'écran ; on réenregistre le capteur pour continuer à détecter les taps.
+     */
+    private val screenReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (!sensorRegistered) return
+            mainHandler.postDelayed({
+                if (sensorRegistered) {
+                    unregisterSensor()
+                    registerSensor()
+                }
+            }, 300)
+        }
+    }
+
     private var wakeLock: PowerManager.WakeLock? = null
     private var toast: Toast? = null
 
@@ -177,6 +197,12 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
         sensorThread = HandlerThread("taps").also { it.start() }
         sensorHandler = Handler(sensorThread!!.looper)
         prefs.sp.registerOnSharedPreferenceChangeListener(prefsListener)
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addAction(Intent.ACTION_SCREEN_ON)
+        }
+        ContextCompat.registerReceiver(this, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        screenReceiverRegistered = true
 
         tts = TextToSpeech(applicationContext, this)
     }
@@ -200,6 +226,10 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
         mainHandler.removeCallbacks(loopRunnable)
         mainHandler.removeCallbacks(idleStopRunnable)
         prefs.sp.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        if (screenReceiverRegistered) {
+            unregisterReceiver(screenReceiver)
+            screenReceiverRegistered = false
+        }
         unregisterSensor()
         sensorThread?.quitSafely()
         tts?.stop()
@@ -364,6 +394,7 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
         }
         generation++
         val gen = generation
+        acquireWakeLock() // renouvelé à chaque lecture : la boucle peut durer très longtemps
         applyVoice(t)
         t.setSpeechRate(prefs.rate)
 
@@ -423,7 +454,9 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
         val acc = accelerometer ?: return
         val h = sensorHandler ?: return
         h.post { detector.reset() }
-        sensorRegistered = sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_FASTEST, h)
+        // maxReportLatency = 0 : pas de regroupement des mesures (sinon, écran éteint,
+        // certains téléphones les livrent par paquets et le comptage des taps est faussé).
+        sensorRegistered = sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_FASTEST, 0, h)
     }
 
     private fun unregisterSensor() {
@@ -547,13 +580,15 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
 
     // ------------------------------------------------------------------ divers
 
+    /** Wake lock non compté : chaque appel le (re)prend pour 4 h, ce qui prolonge son délai. */
     private fun acquireWakeLock() {
-        if (wakeLock?.isHeld == true) return
-        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "DicteeEnBoucle:lecture").also {
-            it.setReferenceCounted(false)
-            it.acquire(4 * 60 * 60 * 1000L)
-        }
+        val lock = wakeLock ?: (getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "DicteeEnBoucle:lecture")
+            .also {
+                it.setReferenceCounted(false)
+                wakeLock = it
+            }
+        lock.acquire(4 * 60 * 60 * 1000L)
     }
 
     private fun releaseWakeLock() {
