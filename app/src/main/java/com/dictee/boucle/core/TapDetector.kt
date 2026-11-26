@@ -109,3 +109,21 @@ fun gestureFor(count: Int): TapGesture = when (count) {
     3 -> TapGesture.BACK
     else -> TapGesture.NONE
 }
+
+/** Résultat d'un « retour » (triple tap), comme le bouton Précédent de Spotify. */
+enum class BackAction { RESTART_PART, PREVIOUS_PART }
+
+/** Au-delà de ce délai depuis le début de la lecture en cours, un retour relit la partie depuis son début. */
+const val RESTART_WINDOW_MS = 3000L
+
+/**
+ * Triple tap façon Spotify : au début de la lecture de la partie (moins de 3 s), on revient à la
+ * partie précédente ; sinon on relit la partie en cours depuis son début. Sur la première partie,
+ * ou si la lecture était en pause, on relit la partie en cours.
+ */
+fun backAction(partIndex: Int, msSinceReadingStart: Long, playing: Boolean): BackAction = when {
+    !playing -> BackAction.RESTART_PART
+    partIndex <= 0 -> BackAction.RESTART_PART
+    msSinceReadingStart > RESTART_WINDOW_MS -> BackAction.RESTART_PART
+    else -> BackAction.PREVIOUS_PART
+}

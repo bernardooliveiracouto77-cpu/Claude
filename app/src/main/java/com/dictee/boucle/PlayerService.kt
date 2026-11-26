@@ -31,7 +31,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
+import com.dictee.boucle.core.BackAction
 import com.dictee.boucle.core.TapDetector
+import com.dictee.boucle.core.backAction
 import com.dictee.boucle.core.TapGesture
 import com.dictee.boucle.core.TextSplitter
 import com.dictee.boucle.core.gestureFor
@@ -58,6 +60,9 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
         const val ACTION_PREV = "com.dictee.boucle.PREV"
         const val ACTION_FIRST = "com.dictee.boucle.FIRST"
         const val ACTION_GOTO = "com.dictee.boucle.GOTO"
+        /** Gestes (taps au dos ou sur l'écran mains libres) : relancent toujours la lecture. */
+        const val ACTION_GESTURE_NEXT = "com.dictee.boucle.GESTURE_NEXT"
+        const val ACTION_GESTURE_BACK = "com.dictee.boucle.GESTURE_BACK"
         const val EXTRA_INDEX = "index"
 
         private const val CHANNEL_ID = "lecture"
@@ -139,6 +144,9 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
     private var pendingStart = false
     private var appliedVoice: String? = "\u0000"
     private var generation = 0
+
+    /** Début (SystemClock.elapsedRealtime) de la lecture en cours de la partie. */
+    private var readingStartedAt = 0L
 
     private var sensorManager: SensorManager? = null
     private var accelerometer: Sensor? = null
@@ -265,6 +273,8 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
             ACTION_PREV -> previous()
             ACTION_FIRST -> goTo(0)
             ACTION_GOTO -> if (index >= 0) goTo(index)
+            ACTION_GESTURE_NEXT -> gestureNext()
+            ACTION_GESTURE_BACK -> gestureBack()
         }
         updateLifecycle()
         updateNotification()
@@ -394,6 +404,7 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
         }
         generation++
         val gen = generation
+        readingStartedAt = SystemClock.elapsedRealtime()
         acquireWakeLock() // renouvelé à chaque lecture : la boucle peut durer très longtemps
         applyVoice(t)
         t.setSpeechRate(prefs.rate)
@@ -492,24 +503,53 @@ class PlayerService : Service(), TextToSpeech.OnInitListener, SensorEventListene
         for (l in listeners.toList()) l.onTapSeries(count)
         if (calibrating) return
         when (gestureFor(count)) {
-            TapGesture.NEXT -> {
-                val before = currentIndex()
-                next()
-                if (currentIndex() != before) showToast(getString(R.string.toast_next))
-            }
-            TapGesture.BACK -> {
-                if (prefs.tripleGoesToFirst) {
-                    goTo(0)
-                    showToast(getString(R.string.toast_first))
-                } else {
+            TapGesture.NEXT -> gestureNext()
+            TapGesture.BACK -> gestureBack()
+            TapGesture.NONE -> return
+        }
+        updateLifecycle()
+        updateNotification()
+        notifyState()
+    }
+
+    /** Double tap : partie suivante, et la lecture continue (ou reprend) en boucle. */
+    fun gestureNext() {
+        val n = partCount()
+        if (n == 0) return
+        val before = currentIndex()
+        if (before < n - 1) {
+            goTo(before + 1)
+            showToast(getString(R.string.toast_next))
+        } else {
+            showToast(getString(R.string.toast_last_part))
+        }
+        if (!playing) play()
+    }
+
+    /**
+     * Triple tap, comme Spotify : début de la partie en cours, ou partie précédente si la lecture
+     * vient de commencer (moins de 3 s). Réglage possible : retour au début du texte.
+     */
+    fun gestureBack() {
+        if (partCount() == 0) return
+        if (prefs.tripleGoesToFirst) {
+            goTo(0)
+            showToast(getString(R.string.toast_first))
+        } else {
+            val since = SystemClock.elapsedRealtime() - readingStartedAt
+            when (backAction(currentIndex(), since, playing)) {
+                BackAction.RESTART_PART -> {
+                    loopNumber = 1
+                    if (playing) startPart()
+                    showToast(getString(R.string.toast_restart))
+                }
+                BackAction.PREVIOUS_PART -> {
                     previous()
                     showToast(getString(R.string.toast_previous))
                 }
             }
-            TapGesture.NONE -> return
         }
-        updateNotification()
-        notifyState()
+        if (!playing) play()
     }
 
     // ------------------------------------------------------------------ notification

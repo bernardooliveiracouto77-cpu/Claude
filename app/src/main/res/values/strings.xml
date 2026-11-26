@@ -23,14 +23,15 @@
     <string name="no_parts">Aucune partie à lire</string>
     <string name="toast_next">Suivant ›</string>
     <string name="toast_previous">‹ Précédent</string>
-    <string name="toast_first">« Début</string>
+    <string name="toast_first">« Début du texte</string>
+    <string name="toast_restart">↺ Début de la partie</string>
     <string name="toast_last_part">Dernière partie</string>
     <string name="tts_unavailable">Synthèse vocale indisponible. Installez une voix française dans les réglages d\'Android.</string>
     <string name="tts_no_french">Aucune voix française installée.</string>
     <string name="channel_name">Lecture</string>
     <string name="channel_desc">Commandes de la dictée en cours</string>
-    <string name="handsfree_hint">Double tap : partie suivante · Triple tap : partie précédente</string>
-    <string name="tap_hint">Au dos du téléphone : double tap = suivante · triple tap = précédente</string>
+    <string name="handsfree_hint">Double tap : partie suivante · Triple tap : début de la partie (2 fois : précédente)</string>
+    <string name="tap_hint">Au dos : double tap = suivante · triple tap = début de la partie (2 fois : précédente)</string>
 
     <string name="section_parts">Découpage</string>
     <string name="size_1">1 phrase par partie</string>
@@ -50,8 +51,8 @@
     <string name="test_sentence">Bonjour. Voici la voix de la dictée, avec une virgule, puis une autre phrase.</string>
     <string name="section_taps">Tap au dos du téléphone</string>
     <string name="triple_action">Triple tap</string>
-    <string name="triple_previous">Partie précédente</string>
-    <string name="triple_first">Retour au début</string>
+    <string name="triple_previous">Comme Spotify : début de la partie, ou partie précédente dans les 3 premières secondes</string>
+    <string name="triple_first">Retour au début du texte</string>
     <string name="sensitivity_format">Sensibilité : %1$d (seuil %2$s m/s²)</string>
     <string name="gauge_help">Tapez au dos du téléphone : la barre doit dépasser le trait rouge. Les gestes ne font pas changer de partie pendant ce réglage.</string>
     <string name="last_tap_none">Dernier tap détecté : —</string>

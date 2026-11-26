@@ -10,7 +10,6 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -18,7 +17,8 @@ import kotlin.math.abs
 
 /**
  * Mode mains libres : plein écran, écran toujours allumé, partie en cours en très gros.
- * Double tap sur l'écran : partie suivante ; triple tap : partie précédente.
+ * Double tap sur l'écran : partie suivante ; triple tap : début de la partie, ou partie précédente
+ * si la lecture vient de commencer (comme les taps au dos).
  */
 class HandsFreeActivity : BaseActivity() {
 
@@ -36,20 +36,13 @@ class HandsFreeActivity : BaseActivity() {
     private var downTime = 0L
     private var downOnControl = false
     private var shownIndex = -1
-    private var toast: Toast? = null
 
     private val resolveTaps = Runnable {
         val c = tapCount
         tapCount = 0
-        when {
-            c == 2 -> {
-                PlayerService.command(this, PlayerService.ACTION_NEXT)
-                showToast(R.string.toast_next)
-            }
-            c >= 3 -> {
-                PlayerService.command(this, PlayerService.ACTION_PREV)
-                showToast(R.string.toast_previous)
-            }
+        when (c) {
+            2 -> PlayerService.command(this, PlayerService.ACTION_GESTURE_NEXT)
+            3 -> PlayerService.command(this, PlayerService.ACTION_GESTURE_BACK)
         }
     }
 
@@ -139,10 +132,5 @@ class HandsFreeActivity : BaseActivity() {
         val loc = IntArray(2)
         v.getLocationOnScreen(loc)
         return ev.rawX >= loc[0] && ev.rawX <= loc[0] + v.width && ev.rawY >= loc[1] && ev.rawY <= loc[1] + v.height
-    }
-
-    private fun showToast(res: Int) {
-        toast?.cancel()
-        toast = Toast.makeText(this, res, Toast.LENGTH_SHORT).also { it.show() }
     }
 }

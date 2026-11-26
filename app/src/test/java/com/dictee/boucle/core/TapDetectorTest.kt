@@ -159,4 +159,17 @@ class TapDetectorTest {
         val series = run(s)
         assertTrue("faux gestes : $series", series.none { gestureFor(it) != TapGesture.NONE })
     }
+
+    @Test
+    fun tripleTapBehavesLikeSpotify() {
+        // Lecture bien entamée : retour au début de la partie en cours.
+        assertEquals(BackAction.RESTART_PART, backAction(5, 8000, playing = true))
+        // Dans les premières secondes : partie précédente.
+        assertEquals(BackAction.PREVIOUS_PART, backAction(5, 1200, playing = true))
+        assertEquals(BackAction.PREVIOUS_PART, backAction(5, RESTART_WINDOW_MS, playing = true))
+        // Première partie : on ne peut que la relire.
+        assertEquals(BackAction.RESTART_PART, backAction(0, 500, playing = true))
+        // En pause : on relance la partie en cours.
+        assertEquals(BackAction.RESTART_PART, backAction(5, 500, playing = false))
+    }
 }
