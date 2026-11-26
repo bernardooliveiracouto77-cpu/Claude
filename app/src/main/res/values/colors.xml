@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cahier : papier blanc, encre bleu nuit, surligneur jaune -->
+    <color name="paper">#FFFDF7</color>
+    <color name="paper_line">#DCE3F0</color>
+    <color name="margin_red">#E8A0A0</color>
+    <color name="ink">#1B2A4A</color>
+    <color name="ink_soft">#4A5875</color>
+    <color name="ink_faded">#6B1B2A4A</color>
+    <color name="highlight">#FFEB5C</color>
+    <color name="highlight_text">#1B2A4A</color>
+    <color name="bar">#F2EEE2</color>
+    <color name="bar_primary">#1B2A4A</color>
+    <color name="bar_primary_dark">#121D35</color>
+    <color name="accent">#2F4F9A</color>
+    <color name="button_primary">#1B2A4A</color>
+    <color name="on_button_primary">#FFFFFF</color>
+    <color name="button_secondary">#E9E4D4</color>
+    <color name="on_button_secondary">#1B2A4A</color>
+    <color name="ripple">#33000000</color>
+    <color name="gauge_track">#E4E0D2</color>
+    <color name="gauge_fill">#2F4F9A</color>
+    <color name="gauge_hit">#E0A800</color>
+    <color name="gauge_threshold">#D32F2F</color>
+    <color name="handsfree_bg">#FFFDF7</color>
+    <color name="launcher_bg">#FFFDF7</color>
+</resources>

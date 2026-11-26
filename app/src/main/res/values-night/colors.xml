@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="paper">#11182A</color>
+    <color name="paper_line">#1E2840</color>
+    <color name="margin_red">#7A3A3A</color>
+    <color name="ink">#E4E9F5</color>
+    <color name="ink_soft">#AEB8CF</color>
+    <color name="ink_faded">#66E4E9F5</color>
+    <color name="highlight">#F2D649</color>
+    <color name="highlight_text">#14203A</color>
+    <color name="bar">#18213A</color>
+    <color name="bar_primary">#18213A</color>
+    <color name="bar_primary_dark">#0C1222</color>
+    <color name="accent">#9DB5F0</color>
+    <color name="button_primary">#9DB5F0</color>
+    <color name="on_button_primary">#0F1830</color>
+    <color name="button_secondary">#26314F</color>
+    <color name="on_button_secondary">#E4E9F5</color>
+    <color name="ripple">#33FFFFFF</color>
+    <color name="gauge_track">#26314F</color>
+    <color name="gauge_fill">#9DB5F0</color>
+    <color name="gauge_hit">#F2D649</color>
+    <color name="gauge_threshold">#FF6B6B</color>
+    <color name="handsfree_bg">#0B1120</color>
+</resources>

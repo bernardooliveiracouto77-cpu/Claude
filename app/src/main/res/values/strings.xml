@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dictée en boucle</string>
+    <string name="text_hint">Collez ici le texte à dicter…\n\nLes paragraphes, les titres, le gras, l\'italique et les listes sont conservés.</string>
+    <string name="paste">Coller</string>
+    <string name="clear">Effacer</string>
+    <string name="split_and_read">Découper et lire</string>
+    <string name="clear_confirm_title">Effacer le texte ?</string>
+    <string name="clear_confirm_message">Tout le texte sera supprimé.</string>
+    <string name="cancel">Annuler</string>
+    <string name="clipboard_empty">Le presse-papiers est vide.</string>
+    <string name="text_empty">Collez d\'abord un texte.</string>
+    <string name="settings">Réglages</string>
+    <string name="hands_free">Mains libres</string>
+    <string name="edit_text">Modifier le texte</string>
+    <string name="first">Début</string>
+    <string name="previous">Précédent</string>
+    <string name="next">Suivant</string>
+    <string name="play">Lire</string>
+    <string name="pause">Pause</string>
+    <string name="close">Fermer</string>
+    <string name="status_format">Partie %1$d / %2$d · lecture n° %3$d</string>
+    <string name="no_parts">Aucune partie à lire</string>
+    <string name="toast_next">Suivant ›</string>
+    <string name="toast_previous">‹ Précédent</string>
+    <string name="toast_first">« Début</string>
+    <string name="toast_last_part">Dernière partie</string>
+    <string name="tts_unavailable">Synthèse vocale indisponible. Installez une voix française dans les réglages d\'Android.</string>
+    <string name="tts_no_french">Aucune voix française installée.</string>
+    <string name="channel_name">Lecture</string>
+    <string name="channel_desc">Commandes de la dictée en cours</string>
+    <string name="handsfree_hint">Double tap : partie suivante · Triple tap : partie précédente</string>
+    <string name="tap_hint">Au dos du téléphone : double tap = suivante · triple tap = précédente</string>
+
+    <string name="section_parts">Découpage</string>
+    <string name="size_1">1 phrase par partie</string>
+    <string name="size_2">2 phrases par partie</string>
+    <string name="size_2_3">2 à 3 phrases (par défaut)</string>
+    <string name="size_3_4">3 à 4 phrases</string>
+    <string name="section_voice">Voix et rythme</string>
+    <string name="speed_format">Vitesse : %1$s</string>
+    <string name="sentence_pause_format">Pause entre les phrases : %1$s s</string>
+    <string name="comma_pause">Pause aux virgules</string>
+    <string name="comma_pause_format">Durée de la pause aux virgules : %1$s s</string>
+    <string name="loop_pause_format">Pause avant de relire la partie : %1$s s</string>
+    <string name="voice">Voix</string>
+    <string name="voice_default">Voix française par défaut</string>
+    <string name="voice_network">(en ligne)</string>
+    <string name="test_voice">Tester la voix</string>
+    <string name="test_sentence">Bonjour. Voici la voix de la dictée, avec une virgule, puis une autre phrase.</string>
+    <string name="section_taps">Tap au dos du téléphone</string>
+    <string name="triple_action">Triple tap</string>
+    <string name="triple_previous">Partie précédente</string>
+    <string name="triple_first">Retour au début</string>
+    <string name="sensitivity_format">Sensibilité : %1$d (seuil %2$s m/s²)</string>
+    <string name="gauge_help">Tapez au dos du téléphone : la barre doit dépasser le trait rouge. Les gestes ne font pas changer de partie pendant ce réglage.</string>
+    <string name="last_tap_none">Dernier tap détecté : —</string>
+    <string name="last_tap_format">Dernier tap détecté : %1$s</string>
+    <string name="tap_single">simple (ignoré)</string>
+    <string name="tap_double">double</string>
+    <string name="tap_triple">triple</string>
+    <string name="tap_many">%1$d taps (ignoré)</string>
+    <string name="no_accelerometer">Ce téléphone n\'a pas d\'accéléromètre.</string>
+</resources>
